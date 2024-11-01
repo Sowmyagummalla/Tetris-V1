@@ -34,11 +34,20 @@ data "aws_vpc" "default" {
   default = true
 }
 
+# Define a list of allowed availability zones for EKS control plane
+variable "allowed_azs" {
+  default = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1f"]
+}
+
 # Get subnets for EKS Cluster
 data "aws_subnets" "public" {
   filter {
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
+  }
+  filter {
+    name   = "availability-zone"
+    values = var.allowed_azs
   }
 }
 
